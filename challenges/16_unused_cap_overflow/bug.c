@@ -33,7 +33,7 @@
  * TODO: append_field 에서 cap 을 실제로 사용하세요. 첫 필드가 아니면 구분자 1바이트가
  *       더 필요합니다.
  *         extra = (*len > 0) ? 1 : 0;          // 구분자
- *         if (*len + extra + flen + 1 > cap)   // +1 은 NUL
+ *            // +1 은 NUL
  *       넘치면 잘라 담거나(truncate) 오류로 처리하세요.
  */
 #include <stdio.h>
@@ -41,10 +41,13 @@
 
 
 static void append_field(char *buf, size_t cap, size_t *len, const char *field, char sep) {
+    size_t flen = strlen(field);
+    size_t extra = (*len > 0) ? 1 : 0;
+    if (*len + extra + flen + 1 > cap) return;
+
     if (*len > 0) {
         buf[(*len)++] = sep;             
     }
-    size_t flen = strlen(field);
     for (size_t i = 0; i < flen; i++) {
         buf[(*len)++] = field[i];         
     }
